@@ -1,3 +1,5 @@
+package br.com.project.newmoodplus.data.repository
+
 import android.content.Context
 import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
 import br.com.project.newmoodplus.data.dto.responses.DailyMoodResponse
@@ -12,10 +14,10 @@ class MoodRepository(private val context: Context) {
     /**
      * Registra o humor do usuário
      */
-    suspend fun registerMood(moodRequest: String, moodRequest1: DailyMoodRequest): Boolean {
+    suspend fun registerMood(dailyMoodRequest: String, moodRequest: DailyMoodRequest): Boolean {
         return try {
             val token = SessionManager.getToken(context) ?: return false
-            val response = api.registerMood("Bearer $token", moodRequest)
+            val response = api.registerMood("Bearer $token", dailyMoodRequest.toString())
             response.isSuccessful
         } catch (e: Exception) {
             e.printStackTrace()

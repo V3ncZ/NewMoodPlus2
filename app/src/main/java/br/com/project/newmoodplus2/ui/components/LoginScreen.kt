@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel // <-- CORREÇÃO 2: IMPOR
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import br.com.project.newmoodplus2.R
-import br.com.project.newmoodplus.data.repository.UserRepository
+import br.com.project.newmoodplus2.data.repository.UserRepository
 import br.com.project.newmoodplus.ui.viewmodel.LoginViewModel
 import br.com.project.newmoodplus.ui.viewmodel.LoginViewModelFactory
 

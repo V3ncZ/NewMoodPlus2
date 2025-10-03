@@ -1,8 +1,6 @@
 package br.com.project.newmoodplus.ui.components
 
 import FormScreenViewModel
-import MoodRepository
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.project.newmoodplus2.R
 import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
+import br.com.project.newmoodplus.data.repository.MoodRepository
 import br.com.project.newmoodplus.domain.model.Pergunta
 import br.com.project.newmoodplus2.ui.viewmodel.factory.FormScreenViewModelFactory
 import kotlin.collections.set

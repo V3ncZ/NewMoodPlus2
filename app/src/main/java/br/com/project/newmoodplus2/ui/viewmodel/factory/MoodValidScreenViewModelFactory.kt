@@ -1,8 +1,8 @@
 package br.com.project.newmoodplus2.ui.viewmodel.factory
 
-import MoodRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import br.com.project.newmoodplus.data.repository.MoodRepository
 import br.com.project.newmoodplus.ui.viewmodel.MoodValidScreenViewModel
 import kotlin.jvm.java
 

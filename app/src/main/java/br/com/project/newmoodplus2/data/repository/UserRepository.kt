@@ -1,10 +1,9 @@
-package br.com.project.newmoodplus.data.repository
+package br.com.project.newmoodplus2.data.repository
 
 import android.content.Context
 import android.util.Base64
 import br.com.project.newmoodplus.data.dto.requests.LoginRequest
-import br.com.project.newmoodplus.data.dto.requests.UserRequest
-import br.com.project.newmoodplus.data.dto.responses.UserResponse
+
 import br.com.project.newmoodplus.data.remote.UserAPI
 import br.com.project.newmoodplus.data.remote.datastore.RetrofitInstance
 import br.com.project.newmoodplus.data.remote.datastore.SessionManager

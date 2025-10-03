@@ -2,7 +2,7 @@ package br.com.project.newmoodplus.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.project.newmoodplus.data.repository.UserRepository
+import br.com.project.newmoodplus2.data.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

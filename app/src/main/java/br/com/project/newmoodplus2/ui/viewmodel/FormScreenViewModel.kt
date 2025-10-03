@@ -1,6 +1,7 @@
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
+import br.com.project.newmoodplus.data.repository.MoodRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

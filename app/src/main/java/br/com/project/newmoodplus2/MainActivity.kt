@@ -50,8 +50,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "FormScreen") {
                             FormScreen(
-                                navController = navController,
-                                moodValidScreenViewModel = TODO()
+                                navController = navController
                             )
                         }
                         composable(route = "MoodValidScreen") {

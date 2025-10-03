@@ -2,7 +2,7 @@ package br.com.project.newmoodplus.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import br.com.project.newmoodplus.data.repository.UserRepository
+import br.com.project.newmoodplus2.data.repository.UserRepository
 
 class LoginViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

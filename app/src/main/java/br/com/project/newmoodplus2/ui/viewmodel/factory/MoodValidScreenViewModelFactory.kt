@@ -1,19 +1,19 @@
-package br.com.project.newmoodplus2.ui.viewmodel.factory
+package br.com.project.newmoodplus.ui.viewmodel.factory
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import br.com.project.newmoodplus.data.repository.MoodRepository
 import br.com.project.newmoodplus.ui.viewmodel.MoodValidScreenViewModel
-import kotlin.jvm.java
 
 class MoodValidScreenViewModelFactory(
-    private val repository: MoodRepository
+    private val repository: Context,
+    private val context: Context
 ) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MoodValidScreenViewModel::class.java)) {
-            return MoodValidScreenViewModel(repository) as T
+            @Suppress("UNCHECKED_CAST")
+            return MoodValidScreenViewModel(repository, context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

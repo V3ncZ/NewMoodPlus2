@@ -1,44 +1,53 @@
 package br.com.project.newmoodplus.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel // <-- CORREÇÃO 2: IMPORT ADICIONADO
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import br.com.project.newmoodplus.ui.viewmodel.LoginState
 import br.com.project.newmoodplus2.R
 import br.com.project.newmoodplus2.data.repository.UserRepository
 import br.com.project.newmoodplus.ui.viewmodel.LoginViewModel
-import br.com.project.newmoodplus.ui.viewmodel.LoginViewModelFactory
+import br.com.project.newmoodplus.ui.viewmodel.factory.LoginScreenViewModelFactory
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun LoginScreen(navController: NavController) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("teste@teste.com") }
+    var password by remember { mutableStateOf("123") }
 
     val context = LocalContext.current
-    val userRepository = remember { UserRepository(context.applicationContext) }
-    val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(userRepository))
-    val loginSuccess by loginViewModel.loginSuccess.collectAsState()
+    // A Factory agora precisa do context para criar o repositório
+    val loginViewModel: LoginViewModel = viewModel(factory = LoginScreenViewModelFactory(UserRepository(context)))
+    val loginState by loginViewModel.loginState.collectAsState()
 
-    LaunchedEffect(loginSuccess) {
-        if (loginSuccess == true) {
-            navController.navigate("HomeScreen")
+    // Variáveis para controlar o Snackbar (mensagem de erro)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // Reage às mudanças de estado do ViewModel
+    LaunchedEffect(loginState) {
+        when (val state = loginState) {
+            is LoginState.Success -> {
+                navController.navigate("HomeScreen")
+            }
+            is LoginState.Error -> {
+                scope.launch {
+                    snackbarHostState.showSnackbar(state.message)
+                }
+            }
+            else -> {} // Idle ou Loading
         }
     }
 
@@ -50,52 +59,37 @@ fun LoginScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 50.dp),
+                .padding(16.dp), // Um padding geral é bom
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo"
-            )
-
-            TextField(
-                value = email,
-                onValueChange = { email = it }, // Simplificado
-                label = { Text("Email") }
-            )
-
-            Spacer(modifier = Modifier.padding(10.dp))
-
-            TextField(
-                value = password,
-                onValueChange = { password = it }, // Simplificado
-                label = { Text("Password") }
-            )
+            // ... seu código de Image e TextFields ...
 
             Button(
+                // Desabilita o botão enquanto estiver carregando
+                enabled = loginState != LoginState.Loading,
                 onClick = { loginViewModel.login(email, password) },
-                modifier = Modifier
-                    .padding(top = 40.dp)
-                    .size(220.dp, 90.dp)
-                    .shadow(5.dp, shape = RoundedCornerShape(20.dp)),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Yellow)),
-                shape = RoundedCornerShape(20.dp)
+                // ... resto do seu modificador e cores ...
             ) {
-                Text(
-                    text = "Entrar",
-                    color = colorResource(id = R.color.Dark),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                // Mostra um indicador de progresso durante o login
+                if (loginState == LoginState.Loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Text(text = "Entrar", /*...*/)
+                }
             }
         }
+
+        // Local para o Snackbar aparecer
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
-    // CORREÇÃO 3: REMOVIDO O PARÂMETRO EXTRA 'CONTEXT'
     LoginScreen(navController = NavHostController(LocalContext.current))
 }

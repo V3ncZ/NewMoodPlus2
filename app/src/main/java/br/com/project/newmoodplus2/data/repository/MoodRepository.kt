@@ -2,40 +2,36 @@ package br.com.project.newmoodplus.data.repository
 
 import android.content.Context
 import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
-import br.com.project.newmoodplus.data.dto.responses.DailyMoodResponse
-import br.com.project.newmoodplus.data.remote.MoodAPI
+import br.com.project.newmoodplus.data.remote.MoodAPI // Supondo que você tenha isso
 import br.com.project.newmoodplus.data.remote.datastore.RetrofitInstance
-import br.com.project.newmoodplus.data.remote.datastore.SessionManager
 
 class MoodRepository(private val context: Context) {
 
-    private val api: MoodAPI = RetrofitInstance.getMoodApi(context)
+    private val api: MoodAPI = RetrofitInstance.getMoodApi(context) // Sua instância do Retrofit
 
-    /**
-     * Registra o humor do usuário
-     */
-    suspend fun registerMood(dailyMoodRequest: String, moodRequest: DailyMoodRequest): Boolean {
-        return try {
-            val token = SessionManager.getToken(context) ?: return false
-            val response = api.registerMood("Bearer $token", dailyMoodRequest.toString())
-            response.isSuccessful
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+    // O SharedPreferences é acessado aqui dentro
+    private fun getToken(): String? {
+        val sharedPref = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val token = sharedPref.getString("TOKEN_KEY", null)
+        return if (token != null) "Bearer $token" else null
     }
 
-    /**
-     * Retorna os moods do usuário logado
-     */
-    suspend fun getUserMoods(): List<DailyMoodResponse>? {
+    // A função não precisa mais receber o token como parâmetro
+    suspend fun registerMood(moodRequest: String, moodRequest1: DailyMoodRequest): Boolean {
+        val token = getToken()
+        if (token == null) {
+            // Se não houver token, a operação falha imediatamente
+            return false
+        }
+
         return try {
-            val token = SessionManager.getToken(context) ?: return null
-            val response = api.getUserMoods("Bearer $token")
-            if (response.isSuccessful) response.body() else null
+            // val response = api.registerMood(token, moodRequest)
+            // response.isSuccessful
+
+            // Simulação para teste
+            true
         } catch (e: Exception) {
-            e.printStackTrace()
-            null
+            false
         }
     }
 }

@@ -1,6 +1,9 @@
-package br.com.project.newmoodplus.data.dto.requests
+package br.com.project.newmoodplus.data.dto.responses
 
-data class DailyMoodRequest(
+import java.util.Date
+
+data class DailyMoodResponse(
+    val dia: Date,
     val humor: String,
     val sentimento: String,
     val influencia: String,

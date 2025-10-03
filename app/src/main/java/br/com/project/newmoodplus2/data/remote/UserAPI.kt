@@ -12,16 +12,16 @@ import retrofit2.http.PUT
 
 
 interface UserAPI {
-    @GET("User")
+    @GET("usuario")
     suspend fun getUser(): List<UserResponse>
 
-    @POST("User")
+    @POST("usuario")
     suspend fun postUser(@Body user: UserRequest): UserResponse
 
-    @PUT("User")
+    @PUT("usuario")
     suspend fun putUser(): UserRequest
 
-    @DELETE("User")
+    @DELETE("usuario")
     suspend fun deleteUser(): UserRequest
 
     @POST("usuario/login")

@@ -1,16 +1,23 @@
 package br.com.project.newmoodplus.data.remote
 
 import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
-import br.com.project.newmoodplus.data.dto.responses.MoodResponse
+import br.com.project.newmoodplus.data.dto.responses.DailyMoodResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface MoodAPI {
 
-    @GET("Mood")
-    suspend fun getMood(): List<MoodResponse>
+    @POST("mood")
+    suspend fun registerMood(
+        @Header("Authorization") token: String,
+        @Body moodRequest: DailyMoodRequest
+    ): Response<Void>
 
-    @POST("Mood")
-    suspend fun postMood(@Body mood: DailyMoodRequest): MoodResponse
+    @GET("mood")
+    suspend fun getUserMoods(
+        @Header("Authorization") token: String
+    ): Response<List<DailyMoodResponse>>
 }

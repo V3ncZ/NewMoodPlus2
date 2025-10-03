@@ -3,10 +3,11 @@ package br.com.project.newmoodplus.domain.model
 import java.util.Date
 
 data class DailyMood(
-    val day: Date,
-    val mood: String,
-    val influence: String,
-    val sleep: String,
-    val leadrshipRelation: String,
-    val workRelation: String
+    val dia: Date,
+    val humor: String,
+    val sentimento: String,
+    val influencia: String,
+    val sono: String,
+    val relacaoLideranca: String,
+    val impactoTrabalho: String
 )

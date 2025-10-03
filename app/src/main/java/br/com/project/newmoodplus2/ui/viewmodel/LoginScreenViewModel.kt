@@ -7,10 +7,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// CORREÇÃO 1: Recebe o UserRepository via construtor, em vez de um Context
 class LoginViewModel(private val repository: UserRepository) : ViewModel() {
 
-    // SUGESTÃO: Usando StateFlow em vez de LiveData
     private val _loginSuccess = MutableStateFlow<Boolean?>(null) // Valor inicial nulo
     val loginSuccess: StateFlow<Boolean?> = _loginSuccess
 

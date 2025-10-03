@@ -1,5 +1,7 @@
 package br.com.project.newmoodplus.ui.components
 
+import MoodRepository
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,19 +17,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import br.com.project.newmoodplus.data.remote.MoodAPI
+import br.com.project.newmoodplus.ui.viewmodel.MoodValidScreenViewModel
 import br.com.project.newmoodplus2.R
+import br.com.project.newmoodplus2.ui.viewmodel.factory.MoodValidScreenViewModelFactory
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun MoodValidScreen(
-    navController: NavController
+    navController: NavController,
+    context: Context
 ){
+
+    val context = LocalContext.current
+    val api = Retrofit.Builder()
+        .baseUrl("http://SEU_IP:PORTA/api/") // ajuste para o da sua API
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(MoodAPI::class.java)
+
+    val moodRepository = MoodRepository(api as Context)
+
+// Para a MoodValidScreen
+    val moodValidViewModel: MoodValidScreenViewModel = viewModel(
+        factory = MoodValidScreenViewModelFactory(moodRepository)
+    )
+
     Box(modifier = Modifier
         .background(colorResource(id = R.color.lightBlue))
         .fillMaxSize()){

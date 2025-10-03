@@ -1,48 +1,44 @@
 package br.com.project.newmoodplus.ui.components
 
+import FormScreenViewModel
+import MoodRepository
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.com.project.newmoodplus2.R
+import br.com.project.newmoodplus.data.dto.requests.DailyMoodRequest
 import br.com.project.newmoodplus.domain.model.Pergunta
-import br.com.project.newmoodplus.ui.viewmodel.MoodValidScreenViewModel
-import java.time.LocalDate
+import br.com.project.newmoodplus2.ui.viewmodel.factory.FormScreenViewModelFactory
 import kotlin.collections.set
 
 @Composable
-fun FormScreen(
-    navController: NavController,
-    moodValidScreenViewModel: MoodValidScreenViewModel
-){
+fun FormScreen(navController: NavController) {
+    val context = LocalContext.current
+
+    // Instancia Repository e ViewModel
+    val moodRepository = remember { MoodRepository(context) }
+    val formViewModel: FormScreenViewModel = viewModel(
+        factory = FormScreenViewModelFactory(moodRepository)
+    )
+
+    val moodSaved by formViewModel.moodSaved.collectAsState()
+    val error by formViewModel.error.collectAsState()
+
     val perguntas = listOf(
         Pergunta("Como você está se sentindo hoje?", listOf("Motivado", "Cansado", "Preocupado", "Estressado", "Satisfeito", "Animado")),
         Pergunta("O que influenciou seu humor?", listOf("Trabalho", "Família", "Saúde", "Relacionamentos", "Estudos")),
@@ -51,13 +47,10 @@ fun FormScreen(
         Pergunta("Como você avalia o impacto do trabalho na sua vida pessoal?", listOf("Muito boa", "Boa", "Mais ou menos", "Ruim", "Muito ruim"))
     )
 
-    var perguntaAtual by remember { mutableIntStateOf(0) }
-    val respostasSelecionadas = remember { mutableStateMapOf<Int, List<String>>() }
-    val opcoesSelecionadas = remember { mutableStateMapOf<String, Boolean>() }
+    var perguntaAtual by remember { mutableStateOf(0) }
+    val respostasSelecionadas = remember { mutableStateMapOf<Int, String>() }
 
     val pergunta = perguntas[perguntaAtual]
-
-//    val erro by moodValidScreenViewModel.erro.observeAsState(initial = "")
 
     Column(
         modifier = Modifier
@@ -70,7 +63,6 @@ fun FormScreen(
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo"
-
         )
 
         Text(
@@ -81,16 +73,25 @@ fun FormScreen(
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        // Checkboxes dinâmicas
         var opcaoSelecionada by remember(perguntaAtual) { mutableStateOf("") }
 
         pergunta.opcoes.forEach { opcao ->
-            Row(modifier = Modifier.fillMaxWidth().padding(start = 22.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 22.dp, top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 RadioButton(
                     selected = opcaoSelecionada == opcao,
                     onClick = { opcaoSelecionada = opcao }
                 )
-                Text(opcao, color = colorResource(id = R.color.Dark), fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = opcao,
+                    color = colorResource(id = R.color.Dark),
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
             }
         }
 
@@ -98,31 +99,24 @@ fun FormScreen(
 
         Button(
             onClick = {
-                // Salvar respostas marcadas para a pergunta atual
-                val respostas = opcoesSelecionadas.filter { it.value }.map { it.key }
-                respostasSelecionadas[perguntaAtual] = listOf(opcaoSelecionada)
+                respostasSelecionadas[perguntaAtual] = opcaoSelecionada
 
-                // Limpar seleção atual
-                opcoesSelecionadas.clear()
-
-                // Avançar
                 if (perguntaAtual < perguntas.size - 1) {
                     perguntaAtual++
                 } else {
-                    // Finalizar
-//                    moodValidScreenViewModel.setData(LocalDate.now().toString())
-//                    moodValidScreenViewModel.setSentimento(respostasSelecionadas[0]?.firstOrNull() ?: "Vazio")
-//                    moodValidScreenViewModel.setInfluencia(respostasSelecionadas[1]?.firstOrNull() ?: "Vazio")
-//                    moodValidScreenViewModel.setSono(respostasSelecionadas[2]?.firstOrNull() ?: "Vazio")
-//                    moodValidScreenViewModel.setLideranca(respostasSelecionadas[3]?.firstOrNull() ?: "Vazio")
-//                    moodValidScreenViewModel.setImpacto(respostasSelecionadas[4]?.firstOrNull() ?: "Vazio")
-//
-//                    moodValidScreenViewModel.salvar()
-//                    println(respostasSelecionadas)
-//                    navController.navigate("HomeScreen")
+                    // Cria DailyMoodRequest e envia via ViewModel
+                    val moodRequest = DailyMoodRequest(
+                        humor = respostasSelecionadas[0] ?: "",
+                        sentimento = respostasSelecionadas[0] ?: "",
+                        influencia = respostasSelecionadas[1] ?: "",
+                        sono = respostasSelecionadas[2] ?: "",
+                        relacaoLideranca = respostasSelecionadas[3] ?: "",
+                        relacaoTrabalho = respostasSelecionadas[4] ?: ""
+                    )
+                    formViewModel.saveMood(moodRequest)
                 }
             },
-            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Yellow)),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.Yellow)),
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .size(220.dp, 64.dp)
@@ -130,11 +124,32 @@ fun FormScreen(
                 .shadow(5.dp, shape = RoundedCornerShape(20.dp))
         ) {
             Text(
-                "Submit",
+                text = if (perguntaAtual < perguntas.size - 1) "Próximo" else "Enviar",
                 color = colorResource(id = R.color.Dark),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 18.sp
             )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Mostrar status
+        when {
+            moodSaved == true -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate("HomeScreen") {
+                        popUpTo("FormScreen") { inclusive = true }
+                    }
+                }
+            }
+            error != null -> {
+                Text(
+                    text = error ?: "Erro desconhecido",
+                    color = colorResource(id = R.color.Yellow),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            else -> {}
         }
     }
 }

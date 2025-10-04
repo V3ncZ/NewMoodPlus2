@@ -4,7 +4,6 @@ import FormScreenViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import br.com.project.newmoodplus.data.repository.MoodRepository
-import kotlin.jvm.java
 
 class FormScreenViewModelFactory(
     private val repository: MoodRepository

@@ -26,7 +26,7 @@ import br.com.project.newmoodplus2.ui.viewmodel.factory.FormScreenViewModelFacto
 import kotlin.collections.set
 
 @Composable
-fun FormScreen(navController: NavController) {
+fun FormScreen(navController: NavController, humor: String) {
     val context = LocalContext.current
 
     // Instancia Repository e ViewModel
@@ -103,9 +103,9 @@ fun FormScreen(navController: NavController) {
                 if (perguntaAtual < perguntas.size - 1) {
                     perguntaAtual++
                 } else {
-                    // Cria DailyMoodRequest e envia via ViewModel
+                    // 2. CORRIJA A CRIAÇÃO DO OBJETO AQUI
                     val moodRequest = DailyMoodRequest(
-                        humor = respostasSelecionadas[0] ?: "",
+                        humor = humor, // Use o parâmetro recebido
                         sentimento = respostasSelecionadas[0] ?: "",
                         influencia = respostasSelecionadas[1] ?: "",
                         sono = respostasSelecionadas[2] ?: "",

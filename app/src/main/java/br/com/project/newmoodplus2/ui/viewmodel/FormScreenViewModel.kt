@@ -17,7 +17,7 @@ class FormScreenViewModel(private val repository: MoodRepository) : ViewModel() 
     fun saveMood(moodRequest: DailyMoodRequest) {
         viewModelScope.launch {
             try {
-                val result = repository.registerMood("", moodRequest) // Token não é necessário aqui
+                val result = repository.registerMood(moodRequest)
                 if (result) {
                     _moodSaved.value = true
                 } else {

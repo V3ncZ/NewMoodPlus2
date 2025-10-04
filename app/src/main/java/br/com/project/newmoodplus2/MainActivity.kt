@@ -6,20 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.project.moodplus.components.LoginScreen
 import br.com.project.newmoodplus.ui.components.FormScreen
 import br.com.project.newmoodplus.ui.components.HomeScreen
 import br.com.project.newmoodplus.ui.components.IntroScreen
-import br.com.project.newmoodplus.ui.components.LoginScreen
 import br.com.project.newmoodplus.ui.components.MoodValidScreen
 import br.com.project.newmoodplus2.ui.theme.NewMoodPlusTheme
 
@@ -48,10 +43,10 @@ class MainActivity : ComponentActivity() {
                                 navController = navController
                             )
                         }
-                        composable(route = "FormScreen") {
-                            FormScreen(
-                                navController = navController
-                            )
+                        composable("formScreen/{humor}") { backStackEntry ->
+                            // Extrai o argumento "humor" da rota
+                            val humor = backStackEntry.arguments?.getString("humor") ?: ""
+                            FormScreen(navController = navController, humor = humor)
                         }
                         composable(route = "MoodValidScreen") {
                             MoodValidScreen(

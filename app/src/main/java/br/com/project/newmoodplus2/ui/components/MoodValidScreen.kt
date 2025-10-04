@@ -1,5 +1,6 @@
 package br.com.project.newmoodplus.ui.components
 
+import MoodValidScreenViewModelFactory
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +35,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.project.newmoodplus.ui.viewmodel.MoodRegistrationState
 import br.com.project.newmoodplus.ui.viewmodel.MoodValidScreenViewModel
-import br.com.project.newmoodplus.ui.viewmodel.factory.MoodValidScreenViewModelFactory
 import br.com.project.newmoodplus2.R // Verifique se este é o caminho correto para sua classe R
 
 @Composable
@@ -46,8 +46,7 @@ fun MoodValidScreen(
     // A Factory é criada passando apenas o context para instanciar o ViewModel corretamente
     val moodValidViewModel: MoodValidScreenViewModel = viewModel(
         factory = MoodValidScreenViewModelFactory(
-            context,
-            context = TODO()
+            context
         )
     )
     val moodState by moodValidViewModel.moodState.collectAsState()
